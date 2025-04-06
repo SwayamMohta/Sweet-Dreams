@@ -29,7 +29,7 @@ FOR 418 HACKATHON
 
 ## About The Project
 
-[[!LOGO][logo-img]](https://github.com/user-attachments/assets/b928126d-7b03-47c6-815a-2d9757388d24)
+[![LOGO][logo-img]](https://github.com/user-attachments/assets/b928126d-7b03-47c6-815a-2d9757388d24)
 
 This Project was made in accordance to the 418 Hackathon (05 Aprl 25 - 06 Aprl 25). Our vision is to enable people to relive their dreams, especially the ones that they vaguely remember.
 
@@ -81,8 +81,6 @@ Project Link:
 
 
 [Node-url]: https://nodejs.org/en
-[Node.js]: https://github.com/user-attachments/files/19619714/sweet-dreams-6d6a6-firebase-adminsdk-fbsvc-8afdf0e201.json
 [html-url]: https://en.wikipedia.org/wiki/HTML
-[HTML.html]: 
 [fire-url]: https://firebase.google.com
-[Firebase.com]:  
+[logo-img]: https://github.com/user-attachments/assets/b928126d-7b03-47c6-815a-2d9757388d24
