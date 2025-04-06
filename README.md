@@ -29,7 +29,7 @@ FOR 418 HACKATHON
 
 ## About The Project
 
-[LOGO](https://github.com/user-attachments/assets/b928126d-7b03-47c6-815a-2d9757388d24)
+[![LOGO][logo-img]](https://github.com/user-attachments/assets/b928126d-7b03-47c6-815a-2d9757388d24)
 
 This Project was made in accordance to the 418 Hackathon (05 Aprl 25 - 06 Aprl 25). Our vision is to enable people to relive their dreams, especially the ones that they vaguely remember.
 
