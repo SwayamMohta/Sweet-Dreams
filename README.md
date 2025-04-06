@@ -34,9 +34,12 @@ This Project was made in accordance to the 418 Hackathon (05 Aprl 25 - 06 Aprl 2
 
 ### Built With
 
-- Node.js
 - Html
+- css
+- js
 - Firestore
+- Node.js
+
 
 
 ## Getting Started
@@ -67,9 +70,9 @@ How to get going with our website? Follow along.
 
 ## Contact
 
-Swayam Mohta:
+Swayam Mohta:9348145200
 
-Anush Mohanty:
+Anush Mohanty:9337378771
 
 Project Link:
 
