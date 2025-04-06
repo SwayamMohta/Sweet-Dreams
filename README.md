@@ -34,7 +34,9 @@ This Project was made in accordance to the 418 Hackathon (05 Aprl 25 - 06 Aprl 2
 
 ### Built With
 
-  [![Node][Node.js]]  [![HTML][HTML.html]]  [![Fire][Firebase.com]]
+- Node.js
+- Html
+- Firestore
 
 
 ## Getting Started
