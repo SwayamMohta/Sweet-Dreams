@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reverie - Entries</title>
+    <link rel="stylesheet" href="./css/all.min.css" />
+    <link rel="stylesheet" href="./css/lib.css" />
+
+    <!-- Firebase SDK links -->
+    <script type="module">
+      // Import Firebase SDKs as ES modules
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+        doc,
+        getDoc,
+        addDoc,
+      } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBijcZU3XQZQsLf9eAy5WKXNVlm1Mhf6OQ",
+        authDomain: "sweet-dreams-6d6a6.firebaseapp.com",
+        projectId: "sweet-dreams-6d6a6",
+        storageBucket: "sweet-dreams-6d6a6.appspot.com",
+        messagingSenderId: "568329085439",
+        appId: "1:568329085439:web:276a5c7e0af4fbd264c7ca",
+        measurementId: "G-KDMG5R6KN9",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const auth = getAuth(app);
+
+      // Fetch stories from Firestore
+      async function fetchStories(user) {
+        if (!user) {
+          console.log("No user logged in.");
+          document.getElementById("storiesContainer").innerHTML =
+            "<p>Please log in to view your stories.</p>";
+          return;
+        }
+
+        console.log("Fetching stories for user:", user.uid);
+
+        const userRef = collection(db, "users", user.uid, "stories");
+
+        try {
+          const storiesSnapshot = await getDocs(userRef);
+          if (storiesSnapshot.empty) {
+            document.getElementById("storiesContainer").innerHTML =
+              "<p>No stories found.</p>";
+            return;
+          }
+
+          // Loop through stories and display them
+          storiesSnapshot.forEach((doc) => {
+            const storyData = doc.data();
+            const storyCard = `
+                      <div class="card">
+                          <div class="card-header">
+                              <h1>${storyData.title}</h1>
+                          </div>
+                          <div class="card-body">
+                              <p>${storyData.content}</p>
+                          </div>
+                          <button class="upload-btn" data-id="${doc.id}">Upload to Featured</button>
+                      </div>
+                  `;
+            document.getElementById("storiesContainer").innerHTML += storyCard;
+          });
+
+          // Add event listeners for the "Upload to Featured" button
+          document.querySelectorAll(".upload-btn").forEach((button) => {
+            button.addEventListener("click", async (event) => {
+              const storyId = event.target.getAttribute("data-id");
+              console.log("Upload button clicked for story ID:", storyId);
+              await uploadToFeatured(storyId, user); // Upload to Featured
+            });
+          });
+        } catch (error) {
+          console.error("Error fetching stories:", error);
+        }
+      }
+
+      // Function to upload the selected story to the Featured collection
+      async function uploadToFeatured(storyId, user) {
+        const storyRef = doc(db, "users", user.uid, "stories", storyId);
+        const storyDoc = await getDoc(storyRef);
+
+        if (!storyDoc.exists()) {
+          console.error("Story not found!");
+          alert("Error: Story not found.");
+          return;
+        }
+
+        const storyData = storyDoc.data();
+        const featuredRef = collection(db, "featured");
+
+        try {
+          // Upload the story to the Featured collection
+          await addDoc(featuredRef, {
+            title: storyData.title,
+            content: storyData.content,
+            timestamp: new Date(),
+          });
+          console.log("Story uploaded to Featured!");
+          alert("Story successfully uploaded to Featured!");
+
+          // Add 25 XP to the user when the story is uploaded to Featured
+          await addXpToUser(user.uid, 25); // Call the backend API to add XP
+        } catch (error) {
+          console.error("Error uploading to Featured:", error);
+          alert("Failed to upload the story to Featured.");
+        }
+      }
+
+      // Function to add XP to the user (send request to your backend)
+      async function addXpToUser(uid, xpAmount) {
+        try {
+          const response = await fetch(`/api/add-xp/${uid}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ amount: xpAmount }),
+          });
+
+          const result = await response.json();
+          if (response.ok) {
+            console.log("XP successfully added:", result);
+          } else {
+            console.log("Error adding XP:", result.error);
+          }
+        } catch (error) {
+          console.error("Error adding XP:", error);
+        }
+      }
+
+      // Check if the user is logged in and fetch stories once authenticated
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          console.log("User authenticated:", user.uid);
+          // Fetch stories once the user is authenticated
+          fetchStories(user);
+        } else {
+          console.log("No user authenticated.");
+          document.getElementById("storiesContainer").innerHTML =
+            "<p>Please log in to view your stories.</p>";
+        }
+      });
+    </script>
+  </head>
+
+  <body>
+    <main class="main-wrap">
+      <header class="main-head">
+        <div class="main-nav">
+          <nav class="navbar">
+            <div class="navbar-nav">
+              <div class="title">
+                <h3>
+                  <i class="fa-solid fa-cube"></i>
+                  <span class="title-text">Reverie</span>
+                </h3>
+              </div>
+              <ul class="nav-list">
+                <li class="nav-list-item">
+                  <a href="index.html" class="nav-link">
+                    <i class="fa-solid fa-house"></i>
+                    <span class="link-text">Home</span>
+                  </a>
+                </li>
+                <li class="nav-list-item">
+                  <a href="entries.html" class="nav-link">
+                    <i class="fa-solid fa-pen"></i>
+                    <span class="link-text">Entries</span>
+                  </a>
+                </li>
+                <li class="nav-list-item">
+                  <a href="Lib.html" class="nav-link">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                    <span class="link-text">Library</span>
+                  </a>
+                </li>
+                <li class="nav-list-item">
+                  <a href="featured.html" class="nav-link">
+                    <i class="fa-solid fa-star"></i>
+                    <span class="link-text">Featured</span>
+                  </a>
+                </li>
+                <!-- <li class="nav-list-item">
+                  <a href="#" class="nav-link">
+                    <i class="fa-solid fa-globe"></i>
+                    <span class="link-text">Friends</span>
+                  </a>
+                </li> -->
+                <li class="nav-list-item">
+                  <a href="profile.html" class="nav-link">
+                    <i class="fa-solid fa-user"></i>
+                    <span class="link-text">Profile</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </header>
+
+      <section class="showcase">
+        <div class="overlay">
+          <div class="head">
+            <button class="toggler">
+              <i class="fa-solid fa-bars-staggered"></i>
+            </button>
+          </div>
+          <div class="top-bar">
+            <h2 class="section-heading">Your Symphony</h2>
+            <button class="add-button">
+              <a href="entries.html"><i class="fa-solid fa-plus"></i> Add</a>
+            </button>
+          </div>
+
+          <section class="projects-section">
+            <div class="container">
+              <div class="column" id="storiesContainer">
+                <!-- Stories will be injected here -->
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script src="./js/app.js"></script>
+  </body>
+</html>

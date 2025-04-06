@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reverie - Featured Stories</title>
+    <link rel="stylesheet" href="./css/all.min.css" />
+    <link rel="stylesheet" href="./css/lib.css" />
+    <style>
+      .vote-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 10px 0 0;
+        align-items: center;
+      }
+
+      .vote-btn {
+        background-color: transparent;
+        border: none;
+        font-size: 18px;
+        cursor: pointer;
+        color: #555;
+        transition: color 0.2s ease;
+        display: flex;
+        align-items: center;
+      }
+
+      .vote-btn:hover {
+        color: #007bff;
+      }
+
+      .vote-btn.upvote:hover {
+        color: rgb(0, 255, 0);
+      }
+
+      .vote-btn.downvote:hover {
+        color: red;
+      }
+
+      .vote-count {
+        margin-left: 4px;
+        font-size: 16px;
+        color: #000;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="main-wrap">
+      <header class="main-head">
+        <div class="main-nav">
+          <nav class="navbar">
+            <div class="navbar-nav">
+              <div class="title">
+                <h3>
+                  <i class="fa-solid fa-cube"></i>
+                  <span class="title-text">Reverie</span>
+                </h3>
+              </div>
+              <ul class="nav-list">
+                <li class="nav-list-item">
+                  <a href="index.html" class="nav-link">
+                    <i class="fa-solid fa-house"></i
+                    ><span class="link-text">Home</span>
+                  </a>
+                </li>
+                <li class="nav-list-item">
+                  <a href="entries.html" class="nav-link">
+                    <i class="fa-solid fa-pen"></i
+                    ><span class="link-text">Entries</span>
+                  </a>
+                </li>
+                <li class="nav-list-item">
+                  <a href="Lib.html" class="nav-link">
+                    <i class="fa-solid fa-book-bookmark"></i
+                    ><span class="link-text">Library</span>
+                  </a>
+                </li>
+                <li class="nav-list-item">
+                  <a href="featured.html" class="nav-link">
+                    <i class="fa-solid fa-star"></i
+                    ><span class="link-text">Featured</span>
+                  </a>
+                </li>
+                <!-- <li class="nav-list-item">
+                  <a href="#" class="nav-link">
+                    <i class="fa-solid fa-globe"></i
+                    ><span class="link-text">Friends</span>
+                  </a>
+                </li> -->
+                <li class="nav-list-item">
+                  <a href="profile.html" class="nav-link">
+                    <i class="fa-solid fa-user"></i
+                    ><span class="link-text">Profile</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </header>
+
+      <section class="showcase">
+        <div class="overlay">
+          <div class="head">
+            <button class="toggler">
+              <i class="fa-solid fa-bars-staggered"></i>
+            </button>
+          </div>
+
+          <div class="top-bar">
+            <h2 class="section-heading">Explore Featured Stories</h2>
+          </div>
+
+          <section class="projects-section">
+            <div class="container">
+              <div class="column" id="featuredStoriesContainer">
+                <!-- Featured stories will be dynamically injected here -->
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <!-- Firebase and app script -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+
+    <script type="module">
+      // Import the necessary Firebase functions (modular approach)
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+        query,
+        orderBy,
+      } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBijcZU3XQZQsLf9eAy5WKXNVlm1Mhf6OQ",
+        authDomain: "sweet-dreams-6d6a6.firebaseapp.com",
+        projectId: "sweet-dreams-6d6a6",
+        storageBucket: "sweet-dreams-6d6a6.appspot.com",
+        messagingSenderId: "568329085439",
+        appId: "1:568329085439:web:276a5c7e0af4fbd264c7ca",
+        measurementId: "G-KDMG5R6KN9",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      // Function to fetch and display featured stories
+      async function fetchFeaturedStories() {
+        // Reference to the 'featured' collection and query for stories ordered by timestamp
+        const storiesRef = collection(db, "featured");
+        const q = query(storiesRef, orderBy("timestamp", "desc"));
+        const querySnapshot = await getDocs(q);
+        const container = document.getElementById("featuredStoriesContainer");
+
+        if (querySnapshot.empty) {
+          container.innerHTML = "<p>No featured stories available.</p>";
+          return;
+        }
+
+        querySnapshot.forEach((doc) => {
+          const storyData = doc.data();
+          const storyCard = `
+            <div class="card">
+              <div class="card-header">
+                <h1>${storyData.title}</h1>
+              </div>
+              <div class="card-body">
+                <p>${storyData.content}</p>
+              </div>
+              <div class="vote-buttons">
+                <button class="vote-btn upvote"><i class="fa-solid fa-thumbs-up"></i><span class="vote-count">0</span></button>
+                <button class="vote-btn downvote"><i class="fa-solid fa-thumbs-down"></i><span class="vote-count">0</span></button>
+              </div>
+            </div>
+          `;
+          container.innerHTML += storyCard;
+        });
+      }
+
+      // Fetch stories when the page loads
+      fetchFeaturedStories();
+    </script>
+    <script src="./js/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reverie</title>
+    <link rel="stylesheet" href="./css/all.min.css" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/entries.css" />
+
+    <!-- Firebase SDK links -->
+    <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"></script>
+  </head>
+
+  <body>
+    <main class="main-wrap">
+      <header class="main-head">
+        <div class="main-nav">
+          <nav class="navbar">
+            <div class="navbar-nav">
+              <div class="title">
+                <h3>
+                  <i class="fa-solid fa-cube"></i>
+                  <span class="title-text">Reverie</span>
+                </h3>
+              </div>
+              <ul class="nav-list">
+                <li class="nav-list-item">
+                  <a href="index.html" class="nav-link">
+                    <i class="fa-solid fa-house"></i>
+                    <span class="link-text">Home</span>
+                  </a>
+                </li>
+                <li class="nav-list-item">
+                  <a href="entries.html" class="nav-link">
+                    <i class="fa-solid fa-pen"></i>
+                    <span class="link-text">Entries</span>
+                  </a>
+                </li>
+                <li class="nav-list-item">
+                  <a href="Lib.html" class="nav-link">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                    <span class="link-text">Library</span>
+                  </a>
+                </li>
+                <li class="nav-list-item">
+                  <a href="featured.html" class="nav-link">
+                    <i class="fa-solid fa-star"></i>
+                    <span class="link-text">Featured</span>
+                  </a>
+                </li>
+                <!-- <li class="nav-list-item">
+                  <a href="#" class="nav-link">
+                    <i class="fa-solid fa-globe"></i>
+                    <span class="link-text">Friends</span>
+                  </a>
+                </li> -->
+                <li class="nav-list-item">
+                  <a href="profile.html" class="nav-link">
+                    <i class="fa-solid fa-user"></i>
+                    <span class="link-text">Profile</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </header>
+      <section class="showcase">
+        <div class="overlay">
+          <div class="head">
+            <button class="toggler">
+              <i class="fa-solid fa-bars-staggered"></i>
+            </button>
+          </div>
+          <div class="signin-wrapper">
+            <div class="signin-container">
+              <h2>Entries</h2>
+              <form id="entriesForm">
+                <label for="title">Title</label>
+                <input
+                  type="text"
+                  id="title"
+                  placeholder="Enter Title"
+                  required
+                />
+
+                <label for="prompt">Prompt</label>
+                <input
+                  type="text"
+                  id="prompt"
+                  placeholder="Enter Prompt"
+                  required
+                />
+
+                <label for="entry">Entry</label>
+                <textarea
+                  id="entry"
+                  placeholder="Enter your entry"
+                  required
+                ></textarea>
+
+                <button type="submit">Submit</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Output Dialog Box -->
+    <div id="outputModal" class="modal">
+      <div class="modal-content">
+        <span id="closeModal" class="close">&times;</span>
+        <h3>Completed Story</h3>
+        <div style="position: relative">
+          <button
+            onclick="copyStory()"
+            style="
+              position: absolute;
+              top: 5px;
+              right: 5px;
+              padding: 4px 8px;
+              font-size: 12px;
+              cursor: pointer;
+              z-index: 2;
+            "
+          >
+            Copy
+          </button>
+
+          <div
+            id="outputMessage"
+            contenteditable="true"
+            style="
+              white-space: pre-wrap;
+              background-color: #f9f9f9;
+              padding: 15px;
+              border-radius: 8px;
+              border: 1px solid #ddd;
+              max-height: 300px;
+              overflow-y: auto;
+              font-family: 'Georgia', serif;
+              font-size: 16px;
+            "
+          >
+            Loading...
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+      import {
+        getFirestore,
+        collection,
+        doc,
+        setDoc,
+        Timestamp,
+      } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+      // Your Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBijcZU3XQZQsLf9eAy5WKXNVlm1Mhf6OQ",
+        authDomain: "sweet-dreams-6d6a6.firebaseapp.com",
+        projectId: "sweet-dreams-6d6a6",
+        storageBucket: "sweet-dreams-6d6a6.appspot.com",
+        messagingSenderId: "568329085439",
+        appId: "1:568329085439:web:276a5c7e0af4fbd264c7ca",
+        measurementId: "G-KDMG5R6KN9",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      let currentUser = null;
+
+      // Check user authentication status
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          currentUser = user; // Set the logged-in user
+        } else {
+          window.location.href = "login.html"; // Redirect to login if not logged in
+        }
+      });
+
+      // Function to save story to Firestore
+      async function saveStoryToFirestore(title, prompt, entry) {
+        if (!currentUser) {
+          console.error("User is not logged in.");
+          return;
+        }
+
+        const userId = currentUser.uid; // Get the logged-in user's UID
+        const userRef = doc(db, "users", userId); // Reference to user's Firestore document
+        const storiesRef = collection(userRef, "stories"); // Reference to the 'stories' subcollection
+
+        try {
+          const newStoryRef = doc(storiesRef); // Automatically generates a unique ID for the story
+          await setDoc(newStoryRef, {
+            title: title,
+            prompt: prompt,
+            content: entry,
+            createdAt: Timestamp.now(), // Store the timestamp
+          });
+          console.log("Story saved successfully!");
+        } catch (error) {
+          console.error("Error saving story: ", error);
+        }
+      }
+
+      // Handling form submission
+      const form = document.getElementById("entriesForm");
+      const modal = document.getElementById("outputModal");
+      const closeModal = document.getElementById("closeModal");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Get form data
+        const title = document.getElementById("title").value;
+        const prompt = document.getElementById("prompt").value;
+        const entry = document.getElementById("entry").value;
+
+        // Prepare request data to send to the backend
+        const requestData = {
+          title: title,
+          story: entry, // The part of the story
+          prompt: prompt,
+        };
+
+        try {
+          // Send POST request to backend
+          const response = await fetch("http://localhost:3000/complete-story", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestData),
+          });
+
+          // Get the response data (completed story)
+          const data = await response.json();
+
+          // Show the completed story in the modal
+          if (data.success) {
+            document.getElementById(
+              "outputMessage"
+            ).innerHTML = `<strong>Completed Story:</strong><br><br>${data.completedStory}`;
+
+            // Save the completed story to Firestore
+            await saveStoryToFirestore(title, prompt, data.completedStory);
+          } else {
+            document.getElementById("outputMessage").innerHTML =
+              "There was an error generating the story.";
+          }
+
+          // Display the modal
+          modal.style.display = "block";
+        } catch (error) {
+          console.error("Error submitting form:", error);
+          document.getElementById("outputMessage").innerHTML =
+            "Error while connecting to the server.";
+          modal.style.display = "block";
+        }
+      });
+
+      // Close the modal when clicking the close button
+      closeModal.addEventListener("click", () => {
+        modal.style.display = "none";
+      });
+
+      // Close the modal if the user clicks outside of it
+      window.addEventListener("click", (event) => {
+        if (event.target === modal) {
+          modal.style.display = "none";
+        }
+      });
+
+      // Copy story to clipboard function
+      function copyStory() {
+        const text = document.getElementById("outputMessage").innerText;
+        navigator.clipboard
+          .writeText(text)
+          .then(() => {
+            alert("Story copied to clipboard!");
+          })
+          .catch((err) => {
+            alert("Failed to copy: " + err);
+          });
+      }
+    </script>
+
+    <script src="./js/app.js"></script>
+    <script src="./js/script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reverie</title>
+    <link rel="stylesheet" href="./css/all.min.css" />
+    <link rel="stylesheet" href="./css/profile.css" />
+    <script type="module" src="./xpgain.html" defer></script>
+  </head>
+  <body>
+    <main class="main-wrap">
+      <header class="main-head">
+        <div class="main-nav">
+          <nav class="navbar">
+            <div class="navbar-nav">
+              <div class="title">
+                <h3>
+                  <i class="fa-solid fa-cube"></i>
+                  <span class="title-text">Reverie</span>
+                </h3>
+              </div>
+              <ul class="nav-list">
+                <li class="nav-list-item">
+                  <a href="index.html" class="nav-link">
+                    <i class="fa-solid fa-house"></i>
+                    <span class="link-text">Home</span>
+                  </a>
+                </li>
+                <li class="nav-list-item">
+                  <a href="entries.html" class="nav-link">
+                    <i class="fa-solid fa-pen"></i>
+                    <span class="link-text">Enteries</span>
+                  </a>
+                </li>
+                <li class="nav-list-item">
+                  <a href="Lib.html" class="nav-link">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                    <span class="link-text">Library</span>
+                  </a>
+                </li>
+                <li class="nav-list-item">
+                  <a href="featured.html" class="nav-link">
+                    <i class="fa-solid fa-star"></i>
+                    <span class="link-text">Featured</span>
+                  </a>
+                </li>
+                <!-- <li class="nav-list-item">
+                  <a href="#" class="nav-link">
+                    <i class="fa-solid fa-globe"></i>
+                    <span class="link-text">Friends</span>
+                  </a>
+                </li> -->
+                <li class="nav-list-item">
+                  <a href="login.html" class="nav-link">
+                    <i class="fa-solid fa-user"></i>
+                    <span class="link-text">Profile</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </header>
+      <section class="showcase">
+        <div class="overlay">
+          <div class="head">
+            <button class="toggler">
+              <i class="fa-solid fa-bars-staggered"></i>
+            </button>
+          </div>
+          <div class="content">
+            <div class="profile">
+              <div class="img-container">
+                <!-- <img src="./img/w-prothemes-logo.png" alt="Profile Image" /> -->
+              </div>
+              <div class="user-details">
+                <!-- Wrapped the 3 text in a div for better structure -->
+                <div class="user-info">
+                  <h3>Welcome, <span id="userEmail"></span></h3>
+                  <div class="user-stats">
+                    <p>XP: <span id="userXP"></span></p>
+                    <p>Level: <span id="userLevel"></span></p>
+                  </div>
+                </div>
+                <!-- Add XP button -->
+                <!-- <button id="addXPButton">Gain 50 XP</button> -->
+                <div id="message"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyBijcZU3XQZQsLf9eAy5WKXNVlm1Mhf6OQ",
+        authDomain: "sweet-dreams-6d6a6.firebaseapp.com",
+        projectId: "sweet-dreams-6d6a6",
+        storageBucket: "sweet-dreams-6d6a6.appspot.com",
+        messagingSenderId: "568329085439",
+        appId: "1:568329085439:web:276a5c7e0af4fbd264c7ca",
+        measurementId: "G-KDMG5R6KN9",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+
+      onAuthStateChanged(auth, (user) => {
+        if (!user) {
+          // Not logged in, redirect to login page
+          window.location.href = "login.html";
+        } else {
+          // Show user email and retrieve XP and level
+          console.log("User is logged in:", user.email);
+          const userEmailElement = document.getElementById("userEmail");
+          if (userEmailElement) userEmailElement.textContent = user.email;
+
+          // Fetch the user XP and level
+          fetchUserData(user.uid);
+        }
+      });
+
+      // Logout button functionality
+      const logoutBtn = document.getElementById("logoutBtn");
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+          signOut(auth)
+            .then(() => {
+              console.log("✅ Logged out");
+              window.location.href = "login.html"; // Redirect to login page
+            })
+            .catch((error) => {
+              console.error("❌ Logout failed:", error);
+              alert("Failed to log out. Please try again.");
+            });
+        });
+      }
+
+      // Fetch user data (XP and level) from your backend
+      function fetchUserData(uid) {
+        fetch(`http://localhost:3000/api/user/${uid}`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.xp && data.level) {
+              const userXPElement = document.getElementById("userXP");
+              const userLevelElement = document.getElementById("userLevel");
+
+              if (userXPElement) userXPElement.textContent = data.xp;
+              if (userLevelElement) userLevelElement.textContent = data.level;
+            }
+          })
+          .catch((error) => console.error("Error fetching user data:", error));
+      }
+
+      // XP button functionality
+      const addXPButton = document.getElementById("addXPButton");
+      if (addXPButton) {
+        addXPButton.addEventListener("click", function () {
+          // Send a request to your backend to add 50 XP to the user
+          const userId = auth.currentUser.uid; // Get the logged-in user's UID
+
+          fetch(`http://localhost:3000/api/add-xp/${userId}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ amount: 50 }), // Add 50 XP
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              // Update the XP and level displayed on the page
+              document.getElementById("userXP").textContent = data.xp;
+              document.getElementById("userLevel").textContent = data.level;
+
+              // Show a success message
+              document.getElementById(
+                "message"
+              ).textContent = `You now have ${data.xp} XP and are at level ${data.level}.`;
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              document.getElementById("message").textContent =
+                "An error occurred while adding XP.";
+            });
+        });
+      }
+    </script>
+
+    <script src="./js/app.js"></script>
+  </body>
+</html>

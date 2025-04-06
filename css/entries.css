@@ -1,0 +1,124 @@
+/* Signin Wrapper - Controls overall width */
+.signin-wrapper {
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+    padding-top: 6%;
+}
+
+
+.signin-container {
+    width: 85%;
+    padding: 1.5rem 2rem;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+
+    /* 🧭 Control height */
+    max-height: 80vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+/* Title */
+.signin-container h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+/* Form styling */
+.signin-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* Labels */
+.signin-container label {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* Input fields & textarea */
+.signin-container input[type="text"],
+.signin-container textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.95rem;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    box-sizing: border-box;
+}
+
+/* Textarea specifically */
+.signin-container textarea {
+    resize: vertical;
+    min-height: 100px;
+    max-height: 200px;
+}
+
+/* Submit button */
+.signin-container button {
+    padding: 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    background-color: #28a745;
+    color: white;
+    cursor: pointer;
+}
+
+.signin-container button:hover {
+    background-color: #218838;
+}
+
+/* Modal background */
+.modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Black with opacity */
+}
+
+/* Modal content */
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Close button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}

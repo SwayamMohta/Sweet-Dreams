@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reverie</title>
+    <link rel="stylesheet" href="./css/all.min.css" />
+    <link rel="stylesheet" href="./css/login.css" />
+    <script type="module" src="./register.js" defer></script>
+  </head>
+
+  <body>
+    <main class="main-wrap">
+      <header class="main-head">
+        <div class="main-nav">
+          <nav class="navbar">
+            <div class="navbar-nav">
+              <div class="title">
+                <h3>
+                  <i class="fa-solid fa-cube"></i>
+                  <span class="title-text">Reverie</span>
+                </h3>
+              </div>
+              <ul class="nav-list">
+                <li class="nav-list-item">
+                  <a href="index.html" class="nav-link">
+                    <i class="fa-solid fa-house"></i>
+                    <span class="link-text">Home</span>
+                  </a>
+                </li>
+                <li class="nav-list-item">
+                  <a href="entries.html" class="nav-link">
+                    <i class="fa-solid fa-pen"></i>
+                    <span class="link-text">Enteries</span>
+                  </a>
+                </li>
+                <li class="nav-list-item">
+                  <a href="Lib.html" class="nav-link">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                    <span class="link-text">Library</span>
+                  </a>
+                </li>
+                <li class="nav-list-item">
+                  <a href="featured.html" class="nav-link">
+                    <i class="fa-solid fa-star"></i>
+                    <span class="link-text">Featuerd</span>
+                  </a>
+                </li>
+                <!-- <li class="nav-list-item">
+                  <a href="#" class="nav-link">
+                    <i class="fa-solid fa-globe"></i>
+                    <span class="link-text">Friends</span>
+                  </a>
+                </li> -->
+                <li class="nav-list-item">
+                  <a href="profile.html" class="nav-link">
+                    <i class="fa-solid fa-user"></i>
+                    <span class="link-text">Profile</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </header>
+      <section class="showcase">
+        <div class="overlay">
+          <div class="head">
+            <button class="toggler">
+              <i class="fa-solid fa-bars-staggered"></i>
+            </button>
+          </div>
+          <div class="signin-wrapper">
+            <div class="signin-container">
+              <h2>Sign In</h2>
+              <input type="email" id="email" placeholder="Email" />
+              <input type="password" id="password" placeholder="Password" />
+              <button id="signInButton">Sign In</button>
+              <div class="links">
+                <a href="#" id="forgotPasswordLink">Forgot password ?</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="./js/app.js"></script>
+  </body>
+</html>
