@@ -76,8 +76,6 @@ Swayam Mohta:9348145200
 
 Anush Mohanty:9337378771
 
-Project Link:
-
 
 
 [Node-url]: https://nodejs.org/en
