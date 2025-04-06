@@ -71,8 +71,8 @@ Project Link:
 
 
 [Node-url]: https://nodejs.org/en
-[Node.js]: https://github.com/user-attachments/assets/3fbb5554-00a9-4866-b005-79a939d102dc
+[Node.js]: 
 [html-url]: https://en.wikipedia.org/wiki/HTML
-[HTML.html]: https://github.com/user-attachments/assets/2f5e0881-a4e0-4a0e-9c7c-53e666c55b9f
+[HTML.html]: 
 [fire-url]: https://firebase.google.com
-[Firebase.com]: https://github.com/user-attachments/assets/553a0933-c7ba-4788-bc78-800bc9f0c97a 
+[Firebase.com]:  
