@@ -45,7 +45,10 @@ How to get going with our website? Follow along.
 
 ### Installation
 
--?
+-live server for main file
+-npm install
+-node xpmath.js
+-node server.js
 
 ## Usage 
 
