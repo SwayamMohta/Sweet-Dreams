@@ -70,11 +70,7 @@ How to get going with our website? Follow along.
   - [ ] Accounts management section
     - [ ] XP + Levelling system
 
-## Contact
 
-Swayam Mohta:9348145200
-
-Anush Mohanty:9337378771
 
 
 
